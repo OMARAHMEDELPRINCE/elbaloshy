@@ -1,0 +1,88 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #chatbox {
+            height: 400px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ccc;
+            background: white;
+            overflow-y: scroll;
+            padding: 10px;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        #user_input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #send {
+            padding: 10px;
+            border: none;
+            background: #5cb85c;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #send:hover {
+            background: #4cae4c;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user {
+            font-weight: bold;
+            color: #5bc0de;
+        }
+        .bot {
+            font-weight: bold;
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <h1>School Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="user_input" placeholder="Ask a question">
+    <button id="send">Send</button>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const userInput = document.getElementById('user_input');
+        const sendBtn = document.getElementById('send');
+
+        sendBtn.addEventListener('click', () => {
+            const userQuery = userInput.value;
+            chatbox.innerHTML += `<p class="message user"><strong>You:</strong> ${userQuery}</p>`;
+            
+            fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: userQuery })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<p class="message bot"><strong>Bot:</strong> ${data.response}</p>`;
+                userInput.value = '';  // Clear the input field
+                chatbox.scrollTop = chatbox.scrollHeight;  // Scroll to the bottom of the chat
+            });
+        });
+    </script>
+</body>
+</html>
